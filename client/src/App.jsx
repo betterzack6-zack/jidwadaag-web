@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { getTrips, postTrip } from './api'
+import { getTrips, postTrip, adminLogin, adminDeleteTrip } from './api'
 
 const navLinks = [
   ['home', 'Accueil'],
@@ -352,6 +352,113 @@ function Proposer({onPosted}){
 function About(){ return <div><h2>À propos</h2><p>JIDWADAAG — covoiturage simple.</p></div> }
 function Contact(){ return <div><h2>Contact</h2><p>contact@jidwadaag.local</p></div> }
 
+function Admin(){
+  const [password, setPassword] = useState('')
+  const [authed, setAuthed] = useState(false)
+  const [trips, setTrips] = useState([])
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  function loadTrips(){
+    setLoading(true)
+    getTrips().then(t => { setTrips(t); setLoading(false) }).catch(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem('admin_pw')
+    if(stored){
+      adminLogin(stored)
+        .then(() => { setPassword(stored); setAuthed(true); loadTrips() })
+        .catch(() => sessionStorage.removeItem('admin_pw'))
+    }
+  }, [])
+
+  async function login(e){
+    e.preventDefault()
+    setError('')
+    try {
+      await adminLogin(password)
+      sessionStorage.setItem('admin_pw', password)
+      setAuthed(true)
+      loadTrips()
+    } catch {
+      setError('Mot de passe incorrect.')
+    }
+  }
+
+  function logout(){
+    sessionStorage.removeItem('admin_pw')
+    setAuthed(false)
+    setPassword('')
+    setTrips([])
+  }
+
+  async function remove(id){
+    if(!window.confirm(`Supprimer définitivement le trajet #${id} ?`)) return
+    try {
+      await adminDeleteTrip(id, password)
+      setTrips(trips.filter(t => t.id !== id))
+    } catch {
+      alert('Erreur lors de la suppression.')
+    }
+  }
+
+  if(!authed){
+    return (
+      <section className="page-section admin-login">
+        <h2>Administration</h2>
+        <form onSubmit={login} className="proposer-form">
+          <label>
+            Mot de passe administrateur
+            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
+          </label>
+          {error && <div className="form-banner form-banner-error">{error}</div>}
+          <button className="primary" type="submit">Se connecter</button>
+        </form>
+      </section>
+    )
+  }
+
+  return (
+    <section className="page-section">
+      <div className="section-header">
+        <h2>Administration — Trajets</h2>
+        <p>{loading ? 'Chargement…' : `${trips.length} trajet(s) enregistré(s). Supprimez les trajets indésirables.`}</p>
+      </div>
+      <div className="admin-actions">
+        <button className="secondary" onClick={loadTrips}>Rafraîchir</button>
+        <button className="secondary" onClick={logout}>Se déconnecter</button>
+      </div>
+      <div className="admin-table-wrap">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Trajet</th><th>Date</th><th>Conducteur</th>
+              <th>Contact</th><th>Places</th><th>Tarif</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {trips.length === 0 ? (
+              <tr><td colSpan="8" className="admin-empty">Aucun trajet.</td></tr>
+            ) : trips.map(t => (
+              <tr key={t.id}>
+                <td>{t.id}</td>
+                <td>{t.depart} → {t.arrive}</td>
+                <td>{t.date} {t.time}</td>
+                <td>{t.driverName}</td>
+                <td>{t.driverNumber}</td>
+                <td>{t.seats != null ? t.seats : '—'}</td>
+                <td>{t.price != null ? `${t.price} Fdj` : '—'}</td>
+                <td><button className="danger-btn" onClick={()=>remove(t.id)}>Supprimer</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
 function Footer(){
   return (
     <footer className="site-footer">
@@ -375,11 +482,18 @@ function Footer(){
 }
 
 export default function App(){
-  const [page, setPage] = useState('home')
+  const [page, setPage] = useState(() => window.location.hash === '#admin' ? 'admin' : 'home')
   const [arriveFilter, setArriveFilter] = useState('')
   function navigate(p){ setArriveFilter(''); setPage(p) }
   function onPosted(){ navigate('trajets') }
   function onCity(city){ setArriveFilter(city); setPage('trajets') }
+
+  useEffect(() => {
+    function onHash(){ if(window.location.hash === '#admin') setPage('admin') }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
   return (
     <div className="app">
       <Nav onNav={navigate} page={page} />
@@ -389,6 +503,7 @@ export default function App(){
         {page==='proposer' && <Proposer onPosted={onPosted} />}
         {page==='about' && <About />}
         {page==='contact' && <Contact />}
+        {page==='admin' && <Admin />}
       </main>
       <Footer />
     </div>

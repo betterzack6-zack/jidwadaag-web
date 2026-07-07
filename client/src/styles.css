@@ -721,6 +721,70 @@ button.accent {
   border: 1px solid rgba(148, 163, 184, 0.14);
 }
 
+/* --- Admin panel --- */
+.admin-login .proposer-form {
+  max-width: 420px;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.admin-table th {
+  background: var(--surface-strong);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 2rem 0;
+}
+
+.danger-btn {
+  background: rgba(220, 38, 38, 0.1);
+  color: #b91c1c;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.danger-btn:hover {
+  background: #dc2626;
+  color: white;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -15,3 +15,20 @@ export async function postTrip(trip){
   if(!res.ok) throw new Error('Failed to post')
   return res.json()
 }
+
+// --- Admin ---
+export async function adminLogin(password){
+  const res = await fetch(API_BASE + '/api/admin/login', {
+    method: 'POST', headers: { 'x-admin-password': password }
+  })
+  if(!res.ok) throw new Error('unauthorized')
+  return res.json()
+}
+
+export async function adminDeleteTrip(id, password){
+  const res = await fetch(API_BASE + '/api/trips/' + id, {
+    method: 'DELETE', headers: { 'x-admin-password': password }
+  })
+  if(!res.ok) throw new Error('delete failed')
+  return res.json()
+}

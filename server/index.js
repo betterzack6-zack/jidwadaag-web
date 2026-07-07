@@ -20,6 +20,21 @@ const pool = new Pool({
   ssl: isLocal ? false : { rejectUnauthorized: false }
 });
 
+// --- Admin authentication ---
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+if (!ADMIN_PASSWORD) {
+  console.warn('⚠️  ADMIN_PASSWORD is not set. The admin panel will be disabled until you set it.');
+}
+function requireAdmin(req, res, next) {
+  if (!ADMIN_PASSWORD) {
+    return res.status(503).json({ error: 'Admin panel not configured (ADMIN_PASSWORD missing).' });
+  }
+  if (req.headers['x-admin-password'] !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Mot de passe incorrect.' });
+  }
+  next();
+}
+
 // --- Schema (created on startup, fresh database) ---
 async function init() {
   await pool.query(`CREATE TABLE IF NOT EXISTS trips (
@@ -90,6 +105,21 @@ app.post('/api/trips', async (req, res) => {
   try {
     const { rows } = await pool.query(sql, values);
     res.status(201).json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Admin routes (protected by ADMIN_PASSWORD) ---
+app.post('/api/admin/login', requireAdmin, (req, res) => {
+  res.json({ ok: true });
+});
+
+app.delete('/api/trips/:id', requireAdmin, async (req, res) => {
+  try {
+    const { rowCount } = await pool.query('DELETE FROM trips WHERE id = $1', [req.params.id]);
+    if (rowCount === 0) return res.status(404).json({ error: 'Trajet introuvable.' });
+    res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
