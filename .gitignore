@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build output
+client/dist/
+
+# Local SQLite database (created at runtime / persisted on host disk)
+server/trips.db
+server/*.db
+
+# Logs & env
+*.log
+.env
+.env.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/
