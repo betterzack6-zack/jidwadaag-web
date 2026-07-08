@@ -121,7 +121,7 @@ function Home({ onNav, onCity }){
       <section className="page-section light-section">
         <div className="section-header">
           <h2>Disponible dans les meilleures villes</h2>
-          <p>Recherchez un trajet pour rejoindre rapidement une grande ville marocaine.</p>
+          <p>Recherchez un trajet pour rejoindre rapidement une ville à Djibouti, en Éthiopie ou au Somaliland.</p>
         </div>
         <div className="city-grid">
           {availableCities.map(city => (
@@ -158,7 +158,7 @@ function Home({ onNav, onCity }){
           </div>
           <div className="benefit-card">
             <strong>Contact direct</strong>
-            <p>Les passagers vous contactent directement via le bouton de réservation.</p>
+            <p>Les passagers vous contactent directement sur WhatsApp via le bouton de réservation.</p>
           </div>
           <div className="benefit-card">
             <strong>Sans inscription</strong>
@@ -174,20 +174,22 @@ function Trajets({ initialArrive = '' }){
   const [trips, setTrips] = useState([])
   const [depart, setDepart] = useState('')
   const [arrive, setArrive] = useState(initialArrive)
+  const [loading, setLoading] = useState(true)
 
   useEffect(()=>{
     setDepart('')
     setArrive(initialArrive)
+    setLoading(true)
     getTrips().then(all => {
       const a = initialArrive.trim().toLowerCase()
       setTrips(a ? all.filter(t => t.arrive.toLowerCase().includes(a)) : all)
-    })
+    }).finally(() => setLoading(false))
   }, [initialArrive])
-  function load(){ setDepart(''); setArrive(''); getTrips().then(setTrips) }
-  function search(){ getTrips().then(all=>{
+  function load(){ setDepart(''); setArrive(''); setLoading(true); getTrips().then(setTrips).finally(()=>setLoading(false)) }
+  function search(){ setLoading(true); getTrips().then(all=>{
     const f = all.filter(t=> (!depart || t.depart.toLowerCase().includes(depart.toLowerCase())) && (!arrive || t.arrive.toLowerCase().includes(arrive.toLowerCase())) )
     setTrips(f)
-  }) }
+  }).finally(()=>setLoading(false)) }
 
   return (
     <section className="page-section trajets-page">
@@ -202,7 +204,7 @@ function Trajets({ initialArrive = '' }){
         <button className="secondary" onClick={load}>Réinitialiser</button>
       </div>
       <div className="trip-grid">
-        {trips.length===0 ? <p className="empty-state">Aucun trajet trouvé.</p> : trips.map(t => (
+        {loading ? <p className="empty-state">Chargement…</p> : trips.length===0 ? <p className="empty-state">Aucun trajet trouvé.</p> : trips.map(t => (
           <article className="trip-card" key={t.id}>
             <div className="trip-route">
               <div className="trip-cities">
@@ -246,6 +248,7 @@ const emptyTrip = {driverName:'', dialCode:'+253', driverNumber:'', depart:'', a
 function Proposer({onPosted}){
   const [form, setForm] = useState(emptyTrip)
   const [status, setStatus] = useState('')
+  const today = new Date().toISOString().split('T')[0]
   function change(k,v){ setForm({...form,[k]:v}) }
   async function submit(e){
     e.preventDefault()
@@ -311,7 +314,7 @@ function Proposer({onPosted}){
           </label>
           <label>
             Date de départ
-            <input type="date" required value={form.date} onChange={e=>change('date', e.target.value)} />
+            <input type="date" required min={today} value={form.date} onChange={e=>change('date', e.target.value)} />
           </label>
           <label>
             Heure de départ
@@ -349,8 +352,54 @@ function Proposer({onPosted}){
   )
 }
 
-function About(){ return <div><h2>À propos</h2><p>JIDWADAAG — covoiturage simple.</p></div> }
-function Contact(){ return <div><h2>Contact</h2><p>contact@jidwadaag.local</p></div> }
+function About(){
+  return (
+    <section className="page-section">
+      <div className="section-header">
+        <h2>À propos de JIDWADAAG</h2>
+        <p>Voyager entre nos villes, simplement et entre confiance.</p>
+      </div>
+      <div className="prose">
+        <p>
+          JIDWADAAG est une plateforme de covoiturage interurbain qui relie les villes
+          de <strong>Djibouti</strong>, d’<strong>Éthiopie</strong> et du <strong>Somaliland</strong>.
+          Notre objectif est simple : rendre les déplacements entre villes plus <strong>faciles</strong>,
+          plus <strong>économiques</strong> et plus <strong>humains</strong>.
+        </p>
+        <p>
+          Chaque jour, des conducteurs prennent la route avec des places libres dans leur véhicule,
+          pendant que d’autres voyageurs cherchent justement à rejoindre la même destination.
+          JIDWADAAG met ces personnes en relation, directement et sans intermédiaire compliqué.
+        </p>
+        <p>
+          Le conducteur publie son trajet en quelques secondes — départ, arrivée, date, prix par place
+          et détails du véhicule. Le passager, lui, trouve un trajet et contacte le conducteur
+          <strong> directement sur WhatsApp</strong> pour réserver sa place. Pas de compte à créer,
+          pas de démarches inutiles.
+        </p>
+        <p>
+          Notre mission : réduire le coût des déplacements, remplir les voitures qui roulent déjà,
+          et renforcer les liens entre les communautés de la région. Ensemble, la route coûte moins
+          cher et devient plus conviviale.
+        </p>
+      </div>
+    </section>
+  )
+}
+
+function Contact(){
+  return (
+    <section className="page-section">
+      <div className="section-header">
+        <h2>Contact</h2>
+        <p>Une question, une remarque ou besoin d’aide ? Écrivez-nous directement sur WhatsApp, nous répondons rapidement.</p>
+      </div>
+      <a className="accent" href="https://wa.me/25377648442" target="_blank" rel="noopener noreferrer">
+        💬 Nous contacter sur WhatsApp
+      </a>
+    </section>
+  )
+}
 
 function Admin(){
   const [password, setPassword] = useState('')
@@ -473,7 +522,7 @@ function Footer(){
         </div>
         <div>
           <strong>Contact</strong>
-          <p>contact@jidwadaag.local</p>
+          <p><a href="https://wa.me/25377648442" target="_blank" rel="noopener noreferrer">WhatsApp : +253 77 64 84 42</a></p>
         </div>
       </div>
       <p className="footer-copy">© 2026 JIDWADAAG. Tous droits réservés.</p>

@@ -324,6 +324,16 @@ button {
   margin: 0 0 0.75rem;
 }
 
+.site-footer a {
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.site-footer a:hover {
+  color: var(--accent);
+}
+
 .site-footer > div p {
   margin: 0;
   line-height: 1.7;
@@ -641,6 +651,17 @@ button.accent {
 .empty-state {
   color: var(--muted);
   padding: 2rem 0;
+}
+
+.prose {
+  max-width: 760px;
+}
+
+.prose p {
+  margin: 0 0 1.2rem;
+  color: var(--text);
+  line-height: 1.9;
+  font-size: 1.05rem;
 }
 
 .modal-overlay {
