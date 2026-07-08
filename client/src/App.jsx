@@ -89,6 +89,33 @@ function whatsappLink(trip){
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`
 }
 
+function WinWin(){
+  return (
+    <div className="winwin-grid">
+      <div className="winwin-card driver">
+        <span className="winwin-emoji">💰</span>
+        <h3>Pour les conducteurs — gagnez de l’argent</h3>
+        <p>Vous prenez déjà la route ? Ne roulez plus avec des sièges vides. Partagez vos frais de carburant et gagnez de l’argent à chaque trajet, sans détour ni effort.</p>
+        <ul>
+          <li>Amortissez le prix de l’essence et du diesel</li>
+          <li>Vous fixez librement votre tarif par place</li>
+          <li>Publiez votre trajet en moins d’une minute</li>
+        </ul>
+      </div>
+      <div className="winwin-card passenger">
+        <span className="winwin-emoji">🧳</span>
+        <h3>Pour les passagers — voyagez mieux</h3>
+        <p>Trouvez une place en quelques clics et voyagez confortablement, plus vite qu’en bus et à un prix juste. Contactez le conducteur directement sur WhatsApp.</p>
+        <ul>
+          <li>Fini les bus longs, bondés et inconfortables</li>
+          <li>Réservez et contactez le conducteur en quelques clics</li>
+          <li>Trajets directs, plus rapides, à petit prix</li>
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 function Home({ onNav, onCity }){
   return (
     <>
@@ -96,7 +123,7 @@ function Home({ onNav, onCity }){
         <div className="hero-copy">
           <p className="eyebrow">JIDWADAAG</p>
           <h1>Voyagez ensemble, en toute simplicité</h1>
-          <p>Proposez ou trouvez un trajet interville rapidement. Conducteurs et passagers se connectent en quelques clics.</p>
+          <p>Les conducteurs rentabilisent leurs places vides, les passagers voyagent plus vite et à petit prix. Une solution <strong>gagnant-gagnant</strong> pour toute la région.</p>
           <div className="hero-actions">
             <button className="primary" onClick={() => onNav('proposer')}>Proposer un trajet</button>
             <button className="secondary" onClick={() => onNav('trajets')}>Voir les trajets</button>
@@ -116,6 +143,14 @@ function Home({ onNav, onCity }){
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="page-section">
+        <div className="section-header">
+          <h2>Une solution gagnant-gagnant</h2>
+          <p>À Djibouti, le carburant coûte cher et les bus sont longs et inconfortables. JIDWADAAG change la donne — autant pour les conducteurs que pour les passagers.</p>
+        </div>
+        <WinWin />
       </section>
 
       <section className="page-section light-section">
@@ -399,6 +434,10 @@ function About(){
           et renforcer les liens entre les communautés de la région. Ensemble, la route coûte moins
           cher et devient plus conviviale.
         </p>
+      </div>
+      <div className="winwin-section">
+        <h2>Pourquoi c’est gagnant-gagnant</h2>
+        <WinWin />
       </div>
     </section>
   )
