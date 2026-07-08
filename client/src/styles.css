@@ -330,8 +330,26 @@ button {
   width: 100%;
 }
 
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.footer-logo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  display: block;
+}
+
 .site-footer h4 {
   margin: 0 0 0.75rem;
+}
+
+.footer-brand h4 {
+  margin: 0;
 }
 
 .site-footer a {

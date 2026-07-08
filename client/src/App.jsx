@@ -444,8 +444,7 @@ function About(){
         <p>
           Notre mission : remplir les voitures qui roulent déjà, permettre aux conducteurs d’amortir
           leurs frais de carburant, et offrir aux passagers un trajet plus <strong>rapide</strong>,
-          plus <strong>direct</strong> et plus <strong>confortable</strong> — tout en renforçant les
-          liens entre les communautés de la région.
+          plus <strong>direct</strong> et plus <strong>confortable</strong>.
         </p>
       </div>
       <div className="winwin-section">
@@ -581,7 +580,10 @@ function Footer(){
   return (
     <footer className="site-footer">
       <div>
-        <h4>JIDWADAAG</h4>
+        <div className="footer-brand">
+          <img src="/logo-header.svg" alt="" className="footer-logo" />
+          <h4>JIDWADAAG</h4>
+        </div>
         <p>Une plateforme moderne pour partager des trajets entre villes.</p>
       </div>
       <div className="footer-links">
