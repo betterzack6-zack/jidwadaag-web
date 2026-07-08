@@ -14,7 +14,10 @@ function Nav({onNav, page}){
   function go(key){ setOpen(false); onNav(key) }
   return (
     <header className="site-header">
-      <button className="brand" onClick={()=>go('home')}>JIDWADAAG</button>
+      <button className="brand" onClick={()=>go('home')}>
+        <img src="/logo-header.svg" alt="" className="brand-logo" />
+        <span>JIDWADAAG</span>
+      </button>
       <button
         className={open ? 'nav-toggle open' : 'nav-toggle'}
         aria-label="Menu"

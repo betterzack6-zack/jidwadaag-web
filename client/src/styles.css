@@ -72,12 +72,22 @@ button {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   background: transparent;
   color: white;
   font-size: 1.3rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   padding: 0.3rem 0.2rem;
+}
+
+.brand-logo {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 9px;
+  display: block;
 }
 
 .nav-toggle {
