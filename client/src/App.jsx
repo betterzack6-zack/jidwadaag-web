@@ -114,7 +114,7 @@ function WinWin(){
           <li>Trajet direct : arrivez plus vite et reposé</li>
           <li>Fini les montées et descentes sous la chaleur</li>
         </ul>
-        <p className="winwin-example">Ex. Djibouti-ville → Dire Dawa : ~4h30 en voiture, sans correspondance, contre ~7h et 3 bus.</p>
+        <p className="winwin-example">Ex. Djibouti-ville → Dire Dawa : ~4h30 en voiture, sans correspondance, contre ~7h, 3 bus et beaucoup de montées et descentes.</p>
       </div>
     </div>
   )
@@ -243,7 +243,15 @@ function Trajets({ initialArrive = '' }){
         <button className="secondary" onClick={load}>Réinitialiser</button>
       </div>
       <div className="trip-grid">
-        {loading ? <p className="empty-state">Chargement…</p> : trips.length===0 ? <p className="empty-state">Aucun trajet trouvé.</p> : trips.map(t => (
+        {loading ? (
+          <p className="loading-note">Chargement…</p>
+        ) : trips.length===0 ? (
+          <div className="empty-state">
+            <span className="empty-emoji">🔍</span>
+            <h3>Oups, aucun trajet pour cet itinéraire… pour l’instant</h3>
+            <p>Nous n’avons pas encore de trajet correspondant à votre recherche. Veuillez revenir ultérieurement pour voir s’il devient disponible.</p>
+          </div>
+        ) : trips.map(t => (
           <article className="trip-card" key={t.id}>
             <div className="trip-route">
               <div className="trip-cities">

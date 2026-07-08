@@ -658,9 +658,37 @@ button.accent {
   width: 100%;
 }
 
-.empty-state {
+.loading-note {
   color: var(--muted);
   padding: 2rem 0;
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 20px;
+}
+
+.empty-emoji {
+  display: block;
+  font-size: 2.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.5rem;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.empty-state p {
+  margin: 0 auto;
+  max-width: 460px;
+  line-height: 1.65;
 }
 
 .install-banner {
