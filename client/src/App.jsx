@@ -105,12 +105,13 @@ function WinWin(){
       <div className="winwin-card passenger">
         <span className="winwin-emoji">🧳</span>
         <h3>Pour les passagers — voyagez mieux</h3>
-        <p>Trouvez une place en quelques clics et voyagez confortablement, plus vite qu’en bus et à un prix juste. Contactez le conducteur directement sur WhatsApp.</p>
+        <p>Trouvez une place en quelques clics et voyagez dans un seul véhicule, bien plus vite qu’en bus — sans les correspondances ni la fatigue, malgré la chaleur.</p>
         <ul>
-          <li>Fini les bus longs, bondés et inconfortables</li>
-          <li>Réservez et contactez le conducteur en quelques clics</li>
-          <li>Trajets directs, plus rapides, à petit prix</li>
+          <li>Un seul véhicule, sans changer de bus en route</li>
+          <li>Trajet direct : arrivez plus vite et reposé</li>
+          <li>Fini les montées et descentes sous la chaleur</li>
         </ul>
+        <p className="winwin-example">Ex. Djibouti-ville → Dire Dawa : ~4h30 en voiture, sans correspondance, contre ~7h et 3 bus.</p>
       </div>
     </div>
   )
@@ -123,7 +124,7 @@ function Home({ onNav, onCity }){
         <div className="hero-copy">
           <p className="eyebrow">JIDWADAAG</p>
           <h1>Voyagez ensemble, en toute simplicité</h1>
-          <p>Les conducteurs rentabilisent leurs places vides, les passagers voyagent plus vite et à petit prix. Une solution <strong>gagnant-gagnant</strong> pour toute la région.</p>
+          <p>Les conducteurs rentabilisent leurs places vides, les passagers voyagent plus vite et confortablement. Une solution <strong>gagnant-gagnant</strong> pour toute la région.</p>
           <div className="hero-actions">
             <button className="primary" onClick={() => onNav('proposer')}>Proposer un trajet</button>
             <button className="secondary" onClick={() => onNav('trajets')}>Voir les trajets</button>
@@ -415,8 +416,8 @@ function About(){
         <p>
           JIDWADAAG est une plateforme de covoiturage interurbain qui relie les villes
           de <strong>Djibouti</strong>, d’<strong>Éthiopie</strong> et du <strong>Somaliland</strong>.
-          Notre objectif est simple : rendre les déplacements entre villes plus <strong>faciles</strong>,
-          plus <strong>économiques</strong> et plus <strong>humains</strong>.
+          Notre objectif est simple : rendre les déplacements entre villes plus <strong>rapides</strong>,
+          plus <strong>confortables</strong> et plus <strong>humains</strong>.
         </p>
         <p>
           Chaque jour, des conducteurs prennent la route avec des places libres dans leur véhicule,
@@ -430,9 +431,10 @@ function About(){
           pas de démarches inutiles.
         </p>
         <p>
-          Notre mission : réduire le coût des déplacements, remplir les voitures qui roulent déjà,
-          et renforcer les liens entre les communautés de la région. Ensemble, la route coûte moins
-          cher et devient plus conviviale.
+          Notre mission : remplir les voitures qui roulent déjà, permettre aux conducteurs d’amortir
+          leurs frais de carburant, et offrir aux passagers un trajet plus <strong>rapide</strong>,
+          plus <strong>direct</strong> et plus <strong>confortable</strong> — tout en renforçant les
+          liens entre les communautés de la région.
         </p>
       </div>
       <div className="winwin-section">

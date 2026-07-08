@@ -777,6 +777,17 @@ button.accent {
   font-weight: 800;
 }
 
+.winwin-example {
+  margin: 1.2rem 0 0;
+  padding: 0.8rem 1rem;
+  background: var(--primary-soft);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--primary);
+}
+
 .winwin-section {
   margin-top: 2.75rem;
 }
