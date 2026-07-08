@@ -238,9 +238,9 @@ function Trajets({ initialArrive = '' }){
 }
 
 const dialCodes = [
-  { code: '+253', placeholder: '77 00 00 00' },
-  { code: '+251', placeholder: '91 234 5678' },
-  { code: '+252', placeholder: '63 000 0000' }
+  { code: '+253', placeholder: '77 80 98 98', lengths: [8], example: '77 80 98 98' },
+  { code: '+251', placeholder: '91 234 56 78', lengths: [9], example: '91 234 56 78' },
+  { code: '+252', placeholder: '63 00 00 00', lengths: [8, 9], example: '63 00 00 00' }
 ]
 
 const emptyTrip = {driverName:'', dialCode:'+253', driverNumber:'', depart:'', arrive:'', date:'', time:'', carMark:'', carModel:'', seats:'', price:'', ac:false, baggage:false, khat:false, description:''}
@@ -248,10 +248,24 @@ const emptyTrip = {driverName:'', dialCode:'+253', driverNumber:'', depart:'', a
 function Proposer({onPosted}){
   const [form, setForm] = useState(emptyTrip)
   const [status, setStatus] = useState('')
+  const [phoneError, setPhoneError] = useState('')
   const today = new Date().toISOString().split('T')[0]
   function change(k,v){ setForm({...form,[k]:v}) }
+  function currentDial(){ return dialCodes.find(d => d.code === form.dialCode) }
+  function checkPhone(){
+    const cfg = currentDial()
+    const digits = form.driverNumber.replace(/\D/g, '')
+    if(cfg && !cfg.lengths.includes(digits.length)){
+      const expected = cfg.lengths.length === 1 ? `${cfg.lengths[0]} chiffres` : `${cfg.lengths.join(' ou ')} chiffres`
+      setPhoneError(`Numéro incorrect (${expected} attendus). Exemple : ${cfg.example}.`)
+      return false
+    }
+    setPhoneError('')
+    return true
+  }
   async function submit(e){
     e.preventDefault()
+    if(!checkPhone()) return
     setStatus('')
     try {
       const payload = { ...form, driverNumber: `${form.dialCode} ${form.driverNumber}`.trim() }
@@ -291,18 +305,21 @@ function Proposer({onPosted}){
           <label>
             Numéro
             <div className="phone-group">
-              <select className="dial-select" value={form.dialCode} onChange={e=>change('dialCode', e.target.value)}>
+              <select className="dial-select" value={form.dialCode} onChange={e=>{ change('dialCode', e.target.value); setPhoneError('') }}>
                 {dialCodes.map(d => <option key={d.code} value={d.code}>{d.code}</option>)}
               </select>
               <input
                 required
                 type="tel"
-                className="phone-input"
-                placeholder={dialCodes.find(d => d.code === form.dialCode)?.placeholder}
+                inputMode="numeric"
+                className={phoneError ? 'phone-input input-error' : 'phone-input'}
+                placeholder={currentDial()?.placeholder}
                 value={form.driverNumber}
-                onChange={e=>change('driverNumber', e.target.value)}
+                onChange={e=>{ change('driverNumber', e.target.value); if(phoneError) setPhoneError('') }}
+                onBlur={checkPhone}
               />
             </div>
+            {phoneError && <span className="field-error">{phoneError}</span>}
           </label>
           <label>
             Ville de départ

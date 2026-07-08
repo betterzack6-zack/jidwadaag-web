@@ -902,6 +902,19 @@ button.accent {
   border-bottom-left-radius: 0;
 }
 
+.input-error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14) !important;
+}
+
+.field-error {
+  display: block;
+  margin-top: 0.5rem;
+  color: #b91c1c;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .checkbox-row {
   display: flex;
   flex-wrap: wrap;
