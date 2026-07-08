@@ -653,6 +653,56 @@ button.accent {
   padding: 2rem 0;
 }
 
+.install-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 200;
+  width: min(560px, calc(100% - 1.5rem));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0.85rem 0.85rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(15, 26, 42, 0.25);
+  animation: modal-in 220ms ease;
+}
+
+.install-text {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.install-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.install-banner .accent {
+  min-height: auto;
+  padding: 0.6rem 1.2rem;
+}
+
+.install-close {
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.5rem 0.6rem;
+  border-radius: 10px;
+}
+
+.install-close:hover {
+  background: var(--primary-soft);
+  color: var(--text);
+}
+
 .prose {
   max-width: 760px;
 }

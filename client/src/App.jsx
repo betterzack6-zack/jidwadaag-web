@@ -530,6 +530,46 @@ function Footer(){
   )
 }
 
+function InstallPrompt(){
+  const [deferred, setDeferred] = useState(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    function onPrompt(e){
+      e.preventDefault()
+      setDeferred(e)
+      setVisible(true)
+    }
+    function onInstalled(){ setVisible(false); setDeferred(null) }
+    window.addEventListener('beforeinstallprompt', onPrompt)
+    window.addEventListener('appinstalled', onInstalled)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onPrompt)
+      window.removeEventListener('appinstalled', onInstalled)
+    }
+  }, [])
+
+  if(!visible) return null
+
+  async function install(){
+    if(!deferred) return
+    deferred.prompt()
+    await deferred.userChoice
+    setDeferred(null)
+    setVisible(false)
+  }
+
+  return (
+    <div className="install-banner">
+      <span className="install-text">📱 Installez l’application JIDWADAAG sur votre téléphone</span>
+      <div className="install-actions">
+        <button className="accent" onClick={install}>Installer</button>
+        <button className="install-close" onClick={()=>setVisible(false)} aria-label="Fermer">✕</button>
+      </div>
+    </div>
+  )
+}
+
 export default function App(){
   const [page, setPage] = useState(() => window.location.hash === '#admin' ? 'admin' : 'home')
   const [arriveFilter, setArriveFilter] = useState('')
@@ -555,6 +595,7 @@ export default function App(){
         {page==='admin' && <Admin />}
       </main>
       <Footer />
+      <InstallPrompt />
     </div>
   )
 }
