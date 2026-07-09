@@ -55,6 +55,10 @@ async function init() {
     "description" TEXT,
     "createdAt" TEXT
   )`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS visits (
+    id SERIAL PRIMARY KEY,
+    "visitedAt" TEXT
+  )`);
   console.log('✅ Database ready');
 }
 
@@ -120,6 +124,34 @@ app.delete('/api/trips/:id', requireAdmin, async (req, res) => {
     const { rowCount } = await pool.query('DELETE FROM trips WHERE id = $1', [req.params.id]);
     if (rowCount === 0) return res.status(404).json({ error: 'Trajet introuvable.' });
     res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Visits tracking ---
+app.post('/api/visit', async (req, res) => {
+  try {
+    await pool.query('INSERT INTO visits ("visitedAt") VALUES ($1)', [new Date().toISOString()]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/admin/stats', requireAdmin, async (req, res) => {
+  try {
+    const now = new Date();
+    const startToday = now.toISOString().split('T')[0] + 'T00:00:00.000Z';
+    const start7 = new Date(now.getTime() - 7 * 24 * 3600 * 1000).toISOString();
+    const total = await pool.query('SELECT COUNT(*)::int AS c FROM visits');
+    const today = await pool.query('SELECT COUNT(*)::int AS c FROM visits WHERE "visitedAt" >= $1', [startToday]);
+    const week = await pool.query('SELECT COUNT(*)::int AS c FROM visits WHERE "visitedAt" >= $1', [start7]);
+    res.json({
+      total: total.rows[0].c,
+      today: today.rows[0].c,
+      last7days: week.rows[0].c
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

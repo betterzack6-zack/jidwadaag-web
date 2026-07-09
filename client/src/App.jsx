@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { getTrips, postTrip, adminLogin, adminDeleteTrip } from './api'
+import { getTrips, postTrip, adminLogin, adminDeleteTrip, recordVisit, adminGetStats } from './api'
 
 const navLinks = [
   ['home', 'Accueil'],
@@ -473,6 +473,7 @@ function Admin(){
   const [password, setPassword] = useState('')
   const [authed, setAuthed] = useState(false)
   const [trips, setTrips] = useState([])
+  const [stats, setStats] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -480,12 +481,16 @@ function Admin(){
     setLoading(true)
     getTrips().then(t => { setTrips(t); setLoading(false) }).catch(() => setLoading(false))
   }
+  function loadStats(pw){
+    adminGetStats(pw).then(setStats).catch(() => setStats(null))
+  }
+  function loadAll(pw){ loadTrips(); loadStats(pw) }
 
   useEffect(() => {
     const stored = sessionStorage.getItem('admin_pw')
     if(stored){
       adminLogin(stored)
-        .then(() => { setPassword(stored); setAuthed(true); loadTrips() })
+        .then(() => { setPassword(stored); setAuthed(true); loadAll(stored) })
         .catch(() => sessionStorage.removeItem('admin_pw'))
     }
   }, [])
@@ -497,7 +502,7 @@ function Admin(){
       await adminLogin(password)
       sessionStorage.setItem('admin_pw', password)
       setAuthed(true)
-      loadTrips()
+      loadAll(password)
     } catch {
       setError('Mot de passe incorrect.')
     }
@@ -539,11 +544,33 @@ function Admin(){
   return (
     <section className="page-section">
       <div className="section-header">
-        <h2>Administration — Trajets</h2>
+        <h2>Tableau de bord</h2>
+        <p>Suivez la fréquentation de votre site et gérez les trajets publiés.</p>
+      </div>
+      <div className="stats-grid">
+        <div className="stat-card">
+          <span className="stat-num">{stats ? stats.total : '—'}</span>
+          <span className="stat-label">Visites totales</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-num">{stats ? stats.today : '—'}</span>
+          <span className="stat-label">Aujourd’hui</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-num">{stats ? stats.last7days : '—'}</span>
+          <span className="stat-label">7 derniers jours</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-num">{trips.length}</span>
+          <span className="stat-label">Trajets publiés</span>
+        </div>
+      </div>
+      <div className="section-header admin-subheader">
+        <h3>Trajets publiés</h3>
         <p>{loading ? 'Chargement…' : `${trips.length} trajet(s) enregistré(s). Supprimez les trajets indésirables.`}</p>
       </div>
       <div className="admin-actions">
-        <button className="secondary" onClick={loadTrips}>Rafraîchir</button>
+        <button className="secondary" onClick={() => loadAll(password)}>Rafraîchir</button>
         <button className="secondary" onClick={logout}>Se déconnecter</button>
       </div>
       <div className="admin-table-wrap">
@@ -652,6 +679,14 @@ export default function App(){
     function onHash(){ if(window.location.hash === '#admin') setPage('admin') }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0]
+    if(localStorage.getItem('last_visit_day') !== today){
+      recordVisit()
+      localStorage.setItem('last_visit_day', today)
+    }
   }, [])
 
   return (

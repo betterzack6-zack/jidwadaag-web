@@ -32,3 +32,19 @@ export async function adminDeleteTrip(id, password){
   if(!res.ok) throw new Error('delete failed')
   return res.json()
 }
+
+export async function recordVisit(){
+  try {
+    await fetch(API_BASE + '/api/visit', { method: 'POST' })
+  } catch {
+    // silencieux : ne jamais bloquer l'app si le comptage échoue
+  }
+}
+
+export async function adminGetStats(password){
+  const res = await fetch(API_BASE + '/api/admin/stats', {
+    headers: { 'x-admin-password': password }
+  })
+  if(!res.ok) throw new Error('stats failed')
+  return res.json()
+}
