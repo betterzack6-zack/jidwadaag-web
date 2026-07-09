@@ -41,6 +41,14 @@ export async function recordVisit(){
   }
 }
 
+export async function recordInstall(){
+  try {
+    await fetch(API_BASE + '/api/install', { method: 'POST' })
+  } catch {
+    // silencieux
+  }
+}
+
 export async function adminGetStats(password){
   const res = await fetch(API_BASE + '/api/admin/stats', {
     headers: { 'x-admin-password': password }

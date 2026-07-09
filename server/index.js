@@ -59,6 +59,10 @@ async function init() {
     id SERIAL PRIMARY KEY,
     "visitedAt" TEXT
   )`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS installs (
+    id SERIAL PRIMARY KEY,
+    "installedAt" TEXT
+  )`);
   console.log('✅ Database ready');
 }
 
@@ -139,6 +143,15 @@ app.post('/api/visit', async (req, res) => {
   }
 });
 
+app.post('/api/install', async (req, res) => {
+  try {
+    await pool.query('INSERT INTO installs ("installedAt") VALUES ($1)', [new Date().toISOString()]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/admin/stats', requireAdmin, async (req, res) => {
   try {
     const now = new Date();
@@ -147,10 +160,12 @@ app.get('/api/admin/stats', requireAdmin, async (req, res) => {
     const total = await pool.query('SELECT COUNT(*)::int AS c FROM visits');
     const today = await pool.query('SELECT COUNT(*)::int AS c FROM visits WHERE "visitedAt" >= $1', [startToday]);
     const week = await pool.query('SELECT COUNT(*)::int AS c FROM visits WHERE "visitedAt" >= $1', [start7]);
+    const installs = await pool.query('SELECT COUNT(*)::int AS c FROM installs');
     res.json({
       total: total.rows[0].c,
       today: today.rows[0].c,
-      last7days: week.rows[0].c
+      last7days: week.rows[0].c,
+      installs: installs.rows[0].c
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { getTrips, postTrip, adminLogin, adminDeleteTrip, recordVisit, adminGetStats } from './api'
+import { getTrips, postTrip, adminLogin, adminDeleteTrip, recordVisit, recordInstall, adminGetStats } from './api'
 
 const navLinks = [
   ['home', 'Accueil'],
@@ -561,6 +561,10 @@ function Admin(){
           <span className="stat-label">7 derniers jours</span>
         </div>
         <div className="stat-card">
+          <span className="stat-num">{stats ? stats.installs : '—'}</span>
+          <span className="stat-label">Installations de l’app</span>
+        </div>
+        <div className="stat-card">
           <span className="stat-num">{trips.length}</span>
           <span className="stat-label">Trajets publiés</span>
         </div>
@@ -687,6 +691,17 @@ export default function App(){
       recordVisit()
       localStorage.setItem('last_visit_day', today)
     }
+  }, [])
+
+  useEffect(() => {
+    function onInstalled(){
+      if(!localStorage.getItem('pwa_installed')){
+        recordInstall()
+        localStorage.setItem('pwa_installed', '1')
+      }
+    }
+    window.addEventListener('appinstalled', onInstalled)
+    return () => window.removeEventListener('appinstalled', onInstalled)
   }, [])
 
   return (
